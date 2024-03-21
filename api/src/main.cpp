@@ -13,13 +13,15 @@ using namespace Poco::Util;
 
 class HelloRequestHandler: public HTTPRequestHandler
 {
-    void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
-    {
+    void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) {
         Application& app = Application::instance();
         app.logger().information("Request from %s", request.clientAddress().toString());
 
         response.setChunkedTransferEncoding(true);
         response.setContentType("text/html");
+        response.set("Access-Control-Allow-Origin", "http://kologermit.ru:8001"); // Разрешение всех источников
+        response.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Origin, Authorization, Accept");
 
         response.send()
             << "<html>"
