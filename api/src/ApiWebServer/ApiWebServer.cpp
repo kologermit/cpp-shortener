@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <memory>
 
 #include "LinkHandlerFactory/LinkHandlerFactory.hpp"
 #include <Poco/Net/HTTPServer.h>
@@ -18,7 +19,7 @@ using namespace Poco::Util;
 int ApiWebServer::main(const std::vector<std::string>&)
 {
     UInt16 port = 8080;
-    HTTPServer srv(new LinkHandlerFactory, port);
+    HTTPServer srv(new LinkHandlerFactory(this->getDB()), port);
     srv.start();
     logger().information("HTTP Server started on port %hu.", port);
     waitForTerminationRequest();
@@ -26,4 +27,8 @@ int ApiWebServer::main(const std::vector<std::string>&)
     srv.stop();
 
     return Application::EXIT_OK;
+}
+
+std::shared_ptr<Database> ApiWebServer::getDB() {
+    return this->_database;
 }
