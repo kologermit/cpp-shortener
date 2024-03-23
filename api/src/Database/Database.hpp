@@ -32,9 +32,12 @@ class Database {
             int id;
             std::string code;
             std::string url;
+            std::string redirect_url;
             DateTime create_date;
             DateTime expire_date;
             const std::string toJSON() const;
         };
-        Link createLink(const std::string& code, const std::string& url);
+        Link createLink(const std::string& code, const std::string& url, const std::string& host);
+        Link getLink(int& id);
+        void deleteLink(Link& link);
 };

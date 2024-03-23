@@ -6,7 +6,8 @@ services:
     ports:
       - ${API_PORT:-8000}:8080
     environment:
-      - DOC_URL=${DOC_URL:-http://localhost:8001}
+      - DOC_HOST=${DOC_HOST:-http://localhost:8001}
+      - HOST=${API_HOST:-http://localhost:8000}
     volumes:
       - ./api:/app
     

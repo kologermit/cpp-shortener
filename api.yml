@@ -106,7 +106,6 @@ paths:
         404:
           description: Код не найден
       
-
 components:
   schemas:
     Link:
@@ -115,12 +114,15 @@ components:
         id:
           type: "integer"
           format: "int32"
-        redirect_url:
+        code:
           type: string
-          example: http://kologermit.ru:8001/AMCYRT
+          example: AMCYRT
         url:
           type: string
           example: http://vk.com/kologermit
+        redirect_url:
+          type: string
+          example: http://kologermit.ru:8001/AMCYRT
         create_date:
           type: "string"
           format: "date-time"
