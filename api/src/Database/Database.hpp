@@ -1,10 +1,12 @@
 #pragma once
 
 #include <Poco/Data/Session.h>
+#include <Poco/DateTime.h>
 #include <string>
 #include <vector>
 
 using Poco::Data::Session;
+using Poco::DateTime;
 
 class Database {
     private:
@@ -23,7 +25,16 @@ class Database {
         };
         std::vector<Table> _tables;
         static const std::vector<Table> getTables();
-    public:
+    public: 
         static void registerConnector();
         Database(const std::string& file_name);
+        struct Link {
+            int id;
+            std::string code;
+            std::string url;
+            DateTime create_date;
+            DateTime expire_date;
+            const std::string toJSON() const;
+        };
+        Link createLink(const std::string& code, const std::string& url);
 };

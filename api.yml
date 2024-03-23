@@ -6,12 +6,12 @@ info:
   contact:
     email: kologermit@gmail.com
 servers:
-  - url: http://kologermit.ru:8080/
+  - url: http://kologermit.ru:8000/
 tags:
   - name: Ссылка
   - name: Перенаправление
 paths:
-  /link/create:
+  /link/create/:
     post:
       tags:
       - Ссылка
@@ -36,7 +36,7 @@ paths:
           description: "Client Error"
         500:
           description: "Server Error"  
-  /link/delete:
+  /link/delete/:
     delete:
       tags:
       - Ссылка
@@ -61,7 +61,7 @@ paths:
           description: "Client Error"
         500:
           description: "Server Error"
-  /link/get_info:
+  /link/get_info/:
     get:
       tags:
       - Ссылка
@@ -86,7 +86,7 @@ paths:
           description: "Client Error"
         500:
           description: "Server Error"
-  /{link_code}:
+  /{link_code}/:
     get:
       tags:
       - Перенаправление
@@ -115,9 +115,6 @@ components:
         id:
           type: "integer"
           format: "int32"
-        redurect_code:
-          type: string
-          example: "AMCYRT"
         redirect_url:
           type: string
           example: http://kologermit.ru:8001/AMCYRT

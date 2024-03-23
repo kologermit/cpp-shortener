@@ -8,7 +8,9 @@ int main(int argc, char** argv)
     try 							
     {	
         Database::registerConnector();
-        ApiWebServer app(std::shared_ptr<Database>(new Database("db.sqlite3")));					
+        ApiWebServer app(
+            std::shared_ptr<Database>(new Database("db.sqlite3"))
+        );					
         return app.run(argc, argv);	
     }								
     catch (std::exception& exc)	

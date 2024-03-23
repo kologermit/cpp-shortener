@@ -1,11 +1,5 @@
-import subprocess, os, sys, signal
+import subprocess, os
 from argparse import ArgumentParser
-
-def signal_handler(signal, frame):
-    print('Stopping program...')
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
 
 def run(cmd):
     print(cmd)

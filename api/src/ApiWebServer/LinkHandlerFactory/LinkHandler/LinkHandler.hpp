@@ -10,7 +10,10 @@ class LinkHandler : public HTTPRequestHandler
 {
     std::shared_ptr<Database> _database;
 public:
-    LinkHandler(std::shared_ptr<Database> database): _database(database), HTTPRequestHandler() {};
+    LinkHandler(
+        std::shared_ptr<Database> database
+    ): _database(database), HTTPRequestHandler() {};
+    
     void createHandler(HTTPServerRequest &request, HTTPServerResponse &response);
     void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response);
 };

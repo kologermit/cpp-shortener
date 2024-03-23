@@ -1,21 +1,33 @@
 #include "Database.hpp"
 
 #include <Poco/Data/SQLite/Connector.h>
-#include <Poco/Data/Session.h>
+#include <Poco/Timespan.h>
+#include <Poco/Data/RecordSet.h>
+#include <Poco/JSON/Object.h>
+#include <Poco/JSON/Stringifier.h>
+#include <Poco/DateTimeFormatter.h>
+#include <Poco/DateTimeFormat.h>
+
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <vector>
 
-using Poco::Data::Session;
 using Poco::Data::SQLite::Connector;
+using Poco::Timespan;
+using Poco::Data::Statement;
+using Poco::Data::RecordSet;
 using namespace Poco::Data::Keywords;
+using Poco::JSON::Object;
+using Poco::JSON::Stringifier;
+using Poco::DateTimeFormatter;
+using Poco::DateTimeFormat;
 
 const std::vector<Database::Table> Database::getTables() {
     return std::vector<Table>{
-        Table("link", {
+        Table("links", {
             Column("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
-            Column("redirect_url", "TEXT"),
+            Column("code", "TEXT"),
             Column("url", "TEXT"),
             Column("create_date", "DATE"),
             Column("expire_date", "DATE")
@@ -47,4 +59,36 @@ Database::Database(const std::string& file_name): _session("SQLite", file_name) 
         std::cout << "Table: " << table.name << std::endl;
         this->_session << query.str(), now;
     }
+}
+
+const std::string Database::Link::toJSON() const {
+    Object json;
+    json.set("id", this->id);
+    json.set("code", this->code);
+    json.set("url", this->url);
+    json.set("create_date", DateTimeFormatter::format(this->create_date, DateTimeFormat::ISO8601_FORMAT));
+    json.set("expire_date", DateTimeFormatter::format(this->expire_date, DateTimeFormat::ISO8601_FORMAT));
+    std::stringstream res;
+    Stringifier::stringify(json, res);
+    return res.str();
+}
+
+Database::Link Database::createLink(const std::string& code, const  std::string& url) {
+    Link res;
+    res.code = code;
+    res.url = url;
+    res.create_date = DateTime();
+    res.expire_date = res.create_date + Timespan(7*24*3600, 0);
+    this->_session << "INSERT INTO links (code, url, create_date, expire_date) VALUES(?, ?, ?, ?)", 
+        use(res.code), 
+        use(res.url),
+        use(res.create_date),
+        use(res.expire_date), now;
+	Statement select(this->_session);
+	select << "SELECT last_insert_rowid()";
+    select.execute();
+    RecordSet rs(select);
+    rs.moveFirst();
+    res.id = rs[0].convert<int>();
+    return res;
 }

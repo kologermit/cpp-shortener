@@ -1,4 +1,7 @@
 venv
 build
 .vscode
+*.db
+*.sqlite3
 CMakeUserPresets.json
+.env

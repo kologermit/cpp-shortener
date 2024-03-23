@@ -16,6 +16,8 @@ class ApiWebServer : public ServerApplication
     int main(const std::vector<std::string>&);
     std::shared_ptr<Database> _database;
     public:
-    ApiWebServer(std::shared_ptr<Database> database): _database(database), ServerApplication() {};
+    ApiWebServer(
+        std::shared_ptr<Database> database
+    ): _database(database), ServerApplication() {};
     std::shared_ptr<Database> getDB();
 };

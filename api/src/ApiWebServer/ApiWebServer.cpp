@@ -3,18 +3,12 @@
 #include <cstdlib>
 #include <memory>
 
-#include "LinkHandlerFactory/LinkHandlerFactory.hpp"
 #include <Poco/Net/HTTPServer.h>
-#include <Poco/Net/HTTPRequestHandlerFactory.h>
-#include <Poco/ScopedLock.h>
-#include <Poco/URI.h>
-#include <Poco/StringTokenizer.h>
 #include "ApiWebServer.hpp"
 #include "LinkHandlerFactory/LinkHandlerFactory.hpp"
 
 using namespace Poco;
 using namespace Poco::Net;
-using namespace Poco::Util;
 
 int ApiWebServer::main(const std::vector<std::string>&)
 {
