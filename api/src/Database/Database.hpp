@@ -39,5 +39,6 @@ class Database {
         };
         Link createLink(const std::string& code, const std::string& url, const std::string& host);
         Link getLink(int& id);
+        Link getLink(std::string code);
         void deleteLink(Link& link);
 };

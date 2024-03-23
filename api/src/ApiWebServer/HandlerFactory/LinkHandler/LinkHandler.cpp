@@ -3,6 +3,7 @@
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/NumberParser.h>
+#include "../../ApiWebServer.hpp"
 #include "LinkHandler.hpp"
 
 #include <string>
@@ -10,9 +11,7 @@
 #include <cstdlib>
 #include <random>
 
-using namespace Poco::Util;
 using namespace Poco::Net;
-using Poco::Net::HTTPResponse;
 using Poco::NumberParser;
 
 int LinkHandler::getParamId(const std::string& uri_string) {
@@ -31,23 +30,17 @@ int LinkHandler::getParamId(const std::string& uri_string) {
 }
 
 void LinkHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response){
-    Application& app = Application::instance();
-    app.logger().information("Request from %s", request.clientAddress().toString());
-    app.logger().information("Method: %s; URI: %s", request.getMethod(), request.getURI());
-
-    response.setChunkedTransferEncoding(true);
-    response.set("Access-Control-Allow-Origin", this->_doc_host); // Разрешение всех источников
-    response.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    response.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Origin, Authorization, Accept");
-    const std::string uri_link_create = "/link/create/";
-    const std::string uri_link_delete = "/link/delete/";
-    const std::string uri_link_get_info = "/link/get_info/";
+    ApiWebServer::setupStandartHeaders(response);
     std::string method = request.getMethod();
     std::string uri = request.getURI();
     if (method == "OPTIONS") {
         response.setStatus(HTTPResponse::HTTP_OK);
-        response.send() << "success";
+        response.send() << "Success";
+        return;
     }
+    const std::string uri_link_create = "/link/create/";
+    const std::string uri_link_delete = "/link/delete/";
+    const std::string uri_link_get_info = "/link/get_info/";
     if (method == "POST" && uri.substr(0, uri_link_create.size()) == uri_link_create) {
         createHandler(request, response);
         return;
@@ -61,7 +54,7 @@ void LinkHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &
         return;
     }
     response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
-    response.send() << "404: method not found";
+    response.send() << "Method not found";
 }
 
 void LinkHandler::createHandler(HTTPServerRequest &request, HTTPServerResponse &response){

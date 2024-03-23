@@ -79,7 +79,7 @@ Database::Link Database::createLink(const std::string& code, const std::string& 
     Link res;
     res.code = code;
     res.url = url;
-    res.redirect_url = host + "/" + code;
+    res.redirect_url = host + "/" + code + "/";
     res.create_date = DateTime();
     res.expire_date = res.create_date + Timespan(7*24*3600, 0);
     this->_session << "INSERT INTO links (code, url, redirect_url, create_date, expire_date) VALUES(?, ?, ?, ?, ?)", 
@@ -103,6 +103,27 @@ Database::Link Database::getLink(int& id) {
     select.execute();
     RecordSet rs(select);
     Link res;
+    res.id = -1;
+	bool more = rs.moveFirst();
+	while (more) {
+        res.id = rs[0].convert<int>();
+        res.code = rs[1].convert<std::string>();
+        res.url = rs[2].convert<std::string>();
+        res.redirect_url = rs[3].convert<std::string>();
+        res.create_date = rs[4].convert<DateTime>();
+        res.expire_date = rs[5].convert<DateTime>();
+		more = rs.moveNext();
+	}
+    return res;
+}
+
+Database::Link Database::getLink(std::string code) {
+    Link res;
+    res.code = code;
+    Statement select(this->_session);
+	select << "SELECT id, code, url, redirect_url, create_date, expire_date FROM links WHERE code=?", use(res.code), now;
+    select.execute();
+    RecordSet rs(select);
     res.id = -1;
 	bool more = rs.moveFirst();
 	while (more) {

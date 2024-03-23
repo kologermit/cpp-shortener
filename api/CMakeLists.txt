@@ -7,7 +7,9 @@ find_package(Poco REQUIRED)
 
 add_executable(API 
     src/main.cpp 
-    src/ApiWebServer/LinkHandlerFactory/LinkHandler/LinkHandler.cpp 
+    src/ApiWebServer/HandlerFactory/HandlerFactory.cpp 
+    src/ApiWebServer/HandlerFactory/LinkHandler/LinkHandler.cpp 
+    src/ApiWebServer/HandlerFactory/RedirectHandler/RedirectHandler.cpp 
     src/ApiWebServer/ApiWebServer.cpp
     src/Database/Database.cpp
 )

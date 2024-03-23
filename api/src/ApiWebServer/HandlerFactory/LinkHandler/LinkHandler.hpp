@@ -8,8 +8,8 @@
 #include <random>
 
 using namespace Poco::Net;
-using Poco::Environment;
 using Poco::URI;
+using Poco::Environment;
 
 class LinkHandler : public HTTPRequestHandler
 {
@@ -18,7 +18,6 @@ class LinkHandler : public HTTPRequestHandler
     std::mt19937 _random_generator;
     std::uniform_int_distribution<int> _random_distance;
     std::string _host;
-    std::string _doc_host;
     static int getParamId(const std::string& uri_string);
 public:
     LinkHandler(
@@ -28,7 +27,6 @@ public:
         _random_generator(this->_random_device()), 
         _random_distance(0, 25), 
         _host(Environment::get("HOST", "http://localhost:8000")),
-        _doc_host(Environment::get("DOC_HOST", "http://localhost:8001")),
         HTTPRequestHandler() {};
     void createHandler(HTTPServerRequest &request, HTTPServerResponse &response);
     void deleteHandler(HTTPServerRequest &request, HTTPServerResponse &response);
