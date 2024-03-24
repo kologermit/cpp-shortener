@@ -88,8 +88,8 @@ Database::Link Database::createLink(const std::string& code, const std::string& 
         use(res.redirect_url),
         use(res.create_date),
         use(res.expire_date), now;
-	Statement select(this->_session);
-	select << "SELECT last_insert_rowid()";
+    Statement select(this->_session);
+    select << "SELECT last_insert_rowid()";
     select.execute();
     RecordSet rs(select);
     rs.moveFirst();
@@ -99,21 +99,21 @@ Database::Link Database::createLink(const std::string& code, const std::string& 
 
 Database::Link Database::getLink(int& id) {
     Statement select(this->_session);
-	select << "SELECT id, code, url, redirect_url, create_date, expire_date FROM links WHERE id=?", use(id), now;
+    select << "SELECT id, code, url, redirect_url, create_date, expire_date FROM links WHERE id=?", use(id), now;
     select.execute();
     RecordSet rs(select);
     Link res;
     res.id = -1;
-	bool more = rs.moveFirst();
-	while (more) {
+    bool more = rs.moveFirst();
+    while (more) {
         res.id = rs[0].convert<int>();
         res.code = rs[1].convert<std::string>();
         res.url = rs[2].convert<std::string>();
         res.redirect_url = rs[3].convert<std::string>();
         res.create_date = rs[4].convert<DateTime>();
         res.expire_date = rs[5].convert<DateTime>();
-		more = rs.moveNext();
-	}
+        more = rs.moveNext();
+    }
     return res;
 }
 
@@ -121,20 +121,20 @@ Database::Link Database::getLink(std::string code) {
     Link res;
     res.code = code;
     Statement select(this->_session);
-	select << "SELECT id, code, url, redirect_url, create_date, expire_date FROM links WHERE code=?", use(res.code), now;
+    select << "SELECT id, code, url, redirect_url, create_date, expire_date FROM links WHERE code=?", use(res.code), now;
     select.execute();
     RecordSet rs(select);
     res.id = -1;
-	bool more = rs.moveFirst();
-	while (more) {
+    bool more = rs.moveFirst();
+    while (more) {
         res.id = rs[0].convert<int>();
         res.code = rs[1].convert<std::string>();
         res.url = rs[2].convert<std::string>();
         res.redirect_url = rs[3].convert<std::string>();
         res.create_date = rs[4].convert<DateTime>();
         res.expire_date = rs[5].convert<DateTime>();
-		more = rs.moveNext();
-	}
+        more = rs.moveNext();
+    }
     return res;
 }
 
