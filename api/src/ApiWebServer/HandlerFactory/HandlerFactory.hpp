@@ -11,12 +11,11 @@ using namespace Poco::Net;
 
 class HandlerFactory : public HTTPRequestHandlerFactory
 {
-    std::shared_ptr<Database> _database;
+    std::shared_ptr<IDatabase> _database;
     std::shared_ptr<Environment> _env;
 public:
     HandlerFactory(
-        std::shared_ptr<Database> database
+        std::shared_ptr<IDatabase> database
     ): _database(database), HTTPRequestHandlerFactory() {};
-    std::shared_ptr<Database> getDB() { return this->_database; }
     virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
 };

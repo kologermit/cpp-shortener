@@ -1,14 +1,15 @@
 #pragma once
 
 #include <Poco/Data/Session.h>
-#include <Poco/DateTime.h>
+
+#include "src/IDatabase.hpp"
+
 #include <string>
 #include <vector>
 
 using Poco::Data::Session;
-using Poco::DateTime;
 
-class Database {
+class Database: public IDatabase {
     private:
         std::string _file_name;
         Session _session;
@@ -28,17 +29,8 @@ class Database {
     public: 
         static void registerConnector();
         Database(const std::string& file_name);
-        struct Link {
-            int id;
-            std::string code;
-            std::string url;
-            std::string redirect_url;
-            DateTime create_date;
-            DateTime expire_date;
-            const std::string toJSON() const;
-        };
-        Link createLink(const std::string& code, const std::string& url, const std::string& host);
-        Link getLink(int& id);
-        Link getLink(std::string code);
-        void deleteLink(Link& link);
+        Link createLink(const std::string& code, const std::string& url, const std::string& host) override;
+        Link getLink(int& id) override;
+        Link getLink(std::string code) override;
+        void deleteLink(Link& link) override;
 };

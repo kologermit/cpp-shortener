@@ -2,6 +2,7 @@
 #include "../ApiWebServer.hpp"
 #include "StandartHandler.hpp"
 #include "RedirectHandler/RedirectHandler.hpp"
+#include "StandartHeadersProxyHandler.hpp"
 #include <regex>
 
 HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest& request)
@@ -12,11 +13,11 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
     const std::string link_path = "/link/";
     std::string uri = request.getURI();
     if (uri.substr(0, link_path.size()) == link_path) {
-        return new LinkHandler(this->getDB());
+        return new StandartHeadersProxyHandler(new LinkHandler(this->_database));
     }
     std::string code = request.getURI().substr(0, 8);
     if (request.getMethod() == "GET" && std::regex_match(code, std::regex("^/[A-Z]{6}/$"))) {
-        return new RedirectHandler(this->getDB(), code);
+        return new StandartHeadersProxyHandler(new RedirectHandler(this->_database, code));
     }
-    return new StadartHandler();
+    return new StandartHeadersProxyHandler(new StandartHandler());
 }

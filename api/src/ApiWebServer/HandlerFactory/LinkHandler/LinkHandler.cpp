@@ -3,7 +3,10 @@
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/NumberParser.h>
-#include "../../ApiWebServer.hpp"
+#include <Poco/JSON/Object.h>
+#include <Poco/JSON/Stringifier.h>
+#include <Poco/DateTimeFormatter.h>
+#include <Poco/DateTimeFormat.h>
 #include "LinkHandler.hpp"
 
 #include <string>
@@ -12,7 +15,8 @@
 #include <random>
 
 using namespace Poco::Net;
-using Poco::NumberParser;
+using Poco::DateTimeFormatter;
+using Poco::DateTimeFormat;
 
 int LinkHandler::getParamId(const std::string& uri_string) {
     URI uri(uri_string);
@@ -20,7 +24,7 @@ int LinkHandler::getParamId(const std::string& uri_string) {
     int id = -1;
     for (auto param : params) {
         if (param.first == "id") {
-            if (!NumberParser::tryParse(param.second, id)) {
+            if (!Poco::NumberParser::tryParse(param.second, id)) {
                 return -1;
             }
             break;
@@ -29,8 +33,20 @@ int LinkHandler::getParamId(const std::string& uri_string) {
     return id;
 }
 
+std::string LinkHandler::LinkToJSON(const IDatabase::Link& link) {
+    Poco::JSON::Object json;
+    json.set("id", link.id);
+    json.set("code", link.code);
+    json.set("url", link.url);
+    json.set("redirect_url", link.redirect_url);
+    json.set("create_date", DateTimeFormatter::format(link.create_date, DateTimeFormat::ISO8601_FORMAT));
+    json.set("expire_date", DateTimeFormatter::format(link.expire_date, DateTimeFormat::ISO8601_FORMAT));
+    std::stringstream res;
+    Poco::JSON::Stringifier::stringify(json, res);
+    return res.str();
+}
+
 void LinkHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response){
-    ApiWebServer::setupStandartHeaders(response);
     std::string method = request.getMethod();
     std::string uri = request.getURI();
     if (method == "OPTIONS") {
@@ -77,9 +93,9 @@ void LinkHandler::createHandler(HTTPServerRequest &request, HTTPServerResponse &
         code += char('A' + this->_random_distance(this->_random_generator));
     }
 
-    Database::Link link = this->_database->createLink(code, param_link, this->_host);
+    IDatabase::Link link = this->_database->createLink(code, param_link, this->_host);
 
-    response.send() << link.toJSON();
+    response.send() << LinkToJSON(link);
     response.setStatus(HTTPResponse::HTTP_OK);
 }
 
@@ -90,7 +106,7 @@ void LinkHandler::deleteHandler(HTTPServerRequest &request, HTTPServerResponse &
         response.send() << "Invalid id";
         return;
     }
-    Database::Link link = this->_database->getLink(id);
+    IDatabase::Link link = this->_database->getLink(id);
     if (link.id == -1) {
         response.setStatus(HTTPResponse::HTTP_BAD_REQUEST);
         response.send() << "Link not found";
@@ -98,7 +114,7 @@ void LinkHandler::deleteHandler(HTTPServerRequest &request, HTTPServerResponse &
     }
     this->_database->deleteLink(link);
 
-    response.send() << link.toJSON();
+    response.send() << LinkToJSON(link);
     response.setStatus(HTTPResponse::HTTP_OK);
 }
 
@@ -109,12 +125,12 @@ void LinkHandler::getInfoHandler(HTTPServerRequest &request, HTTPServerResponse 
         response.send() << "Invalid id";
         return;
     }
-    Database::Link link = this->_database->getLink(id);
+    IDatabase::Link link = this->_database->getLink(id);
     if (link.id == -1) {
         response.setStatus(HTTPResponse::HTTP_BAD_REQUEST);
         response.send() << "Link not found";
         return;
     }
-    response.send() << link.toJSON();
+    response.send() << LinkToJSON(link);
     response.setStatus(HTTPResponse::HTTP_OK);
 }

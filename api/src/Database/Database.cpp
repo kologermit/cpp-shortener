@@ -3,10 +3,6 @@
 #include <Poco/Data/SQLite/Connector.h>
 #include <Poco/Timespan.h>
 #include <Poco/Data/RecordSet.h>
-#include <Poco/JSON/Object.h>
-#include <Poco/JSON/Stringifier.h>
-#include <Poco/DateTimeFormatter.h>
-#include <Poco/DateTimeFormat.h>
 
 #include <string>
 #include <iostream>
@@ -18,10 +14,6 @@ using Poco::Timespan;
 using Poco::Data::Statement;
 using Poco::Data::RecordSet;
 using namespace Poco::Data::Keywords;
-using Poco::JSON::Object;
-using Poco::JSON::Stringifier;
-using Poco::DateTimeFormatter;
-using Poco::DateTimeFormat;
 
 const std::vector<Database::Table> Database::getTables() {
     return std::vector<Table>{
@@ -60,19 +52,6 @@ Database::Database(const std::string& file_name): _session("SQLite", file_name) 
         std::cout << "Table: " << table.name << std::endl;
         this->_session << query.str(), now;
     }
-}
-
-const std::string Database::Link::toJSON() const {
-    Object json;
-    json.set("id", this->id);
-    json.set("code", this->code);
-    json.set("url", this->url);
-    json.set("redirect_url", this->redirect_url);
-    json.set("create_date", DateTimeFormatter::format(this->create_date, DateTimeFormat::ISO8601_FORMAT));
-    json.set("expire_date", DateTimeFormatter::format(this->expire_date, DateTimeFormat::ISO8601_FORMAT));
-    std::stringstream res;
-    Stringifier::stringify(json, res);
-    return res.str();
 }
 
 Database::Link Database::createLink(const std::string& code, const std::string& url, const std::string& host) {

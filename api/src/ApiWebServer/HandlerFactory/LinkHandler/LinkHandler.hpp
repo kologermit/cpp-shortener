@@ -3,7 +3,7 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Environment.h>
 #include <Poco/URI.h>
-#include "../../../Database/Database.hpp"
+#include "src/IDatabase.hpp"
 #include <memory>
 #include <random>
 
@@ -13,15 +13,16 @@ using Poco::Environment;
 
 class LinkHandler : public HTTPRequestHandler
 {
-    std::shared_ptr<Database> _database;
+    std::shared_ptr<IDatabase> _database;
     std::random_device _random_device;
     std::mt19937 _random_generator;
     std::uniform_int_distribution<int> _random_distance;
     std::string _host;
     static int getParamId(const std::string& uri_string);
+    static std::string LinkToJSON(const IDatabase::Link& link);
 public:
     LinkHandler(
-        std::shared_ptr<Database> database
+        std::shared_ptr<IDatabase> database
     ): 
         _database(database), 
         _random_generator(this->_random_device()), 

@@ -1,7 +1,6 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/DateTime.h>
-#include "../../ApiWebServer.hpp"
 #include "RedirectHandler.hpp"
 
 #include <string>
@@ -9,13 +8,10 @@
 #include <cstdlib>
 #include <random>
 
-using namespace Poco::Util;
 using namespace Poco::Net;
-using Poco::NumberParser;
 using Poco::DateTime;
 
 void RedirectHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response){
-    ApiWebServer::setupStandartHeaders(response);
     std::string method = request.getMethod();
     if (method == "OPTIONS") {
         response.setStatus(HTTPResponse::HTTP_OK);
@@ -26,7 +22,7 @@ void RedirectHandler::handleRequest(HTTPServerRequest &request, HTTPServerRespon
 }
 
 void RedirectHandler::redirectHandler(HTTPServerRequest &request, HTTPServerResponse &response) {
-    Database::Link link = this->_database->getLink(this->_code.substr(1, 6));
+    IDatabase::Link link = this->_database->getLink(this->_code.substr(1, 6));
     if (link.id == -1) {
         response.setStatus(HTTPResponse::HTTP_BAD_REQUEST);
         response.send() << "Link not found";

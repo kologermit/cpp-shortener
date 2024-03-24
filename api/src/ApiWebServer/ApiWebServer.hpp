@@ -6,7 +6,7 @@
 #include <iostream>
 #include <memory>
 
-#include "../Database/Database.hpp"
+#include "src/IDatabase.hpp"
 
 using namespace Poco::Util;
 using Poco::Net::HTTPServerResponse;
@@ -21,13 +21,11 @@ class ApiWebServer : public ServerApplication
             ServerApplication::initialize(self);
         }
         int main(const std::vector<std::string>&);
-        std::shared_ptr<Database> _database;
+        std::shared_ptr<IDatabase> _database;
     public:
         ApiWebServer(
-            std::shared_ptr<Database> database
+            std::shared_ptr<IDatabase> database
         ): 
             _database(database), 
             ServerApplication() {};
-        std::shared_ptr<Database> getDB();
-        static void setupStandartHeaders(HTTPServerResponse& response);
 };
