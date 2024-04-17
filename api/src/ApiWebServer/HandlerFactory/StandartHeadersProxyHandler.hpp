@@ -18,6 +18,11 @@ public:
         response.set("Access-Control-Allow-Origin", _doc_host);
         response.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         response.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Origin, Authorization, Accept");
+        if (request.getMethod() == "OPTIONS") {
+            response.setStatus(HTTPResponse::HTTP_OK);
+            response.send() << "Success";
+            return;
+        }
         this->_requestHandlerPtr->handleRequest(request, response);
     };
 };

@@ -19,6 +19,5 @@ public:
         _database(database), 
         _code(code),
         HTTPRequestHandler() {};
-    void redirectHandler(HTTPServerRequest &request, HTTPServerResponse &response);
     void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response);
 };

@@ -4,6 +4,7 @@ project(API)
 include_directories(.)
 
 find_package(Poco REQUIRED)
+find_package(GTest REQUIRED)
 
 add_executable(API 
     src/main.cpp 
@@ -14,11 +15,4 @@ add_executable(API
     src/Database/Database.cpp
 )
 target_link_libraries(API Poco::Poco)
-
-# add_executable(SQLITE 
-#     src/test.cpp
-#     src/Database/Database.cpp
-# )
-# target_link_libraries(SQLITE Poco::Poco)
-
-# add_executable(SQLITE src)
+target_link_libraries(API gtest::gtest)

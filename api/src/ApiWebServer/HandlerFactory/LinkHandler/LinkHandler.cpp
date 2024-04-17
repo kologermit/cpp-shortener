@@ -49,11 +49,6 @@ std::string LinkHandler::LinkToJSON(const IDatabase::Link& link) {
 void LinkHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response){
     std::string method = request.getMethod();
     std::string uri = request.getURI();
-    if (method == "OPTIONS") {
-        response.setStatus(HTTPResponse::HTTP_OK);
-        response.send() << "Success";
-        return;
-    }
     const std::string uri_link_create = "/link/create/";
     const std::string uri_link_delete = "/link/delete/";
     const std::string uri_link_get_info = "/link/get_info/";
